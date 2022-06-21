@@ -1,0 +1,23 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "es6": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "rules": {
+    "semi": [2, "never"],
+    "no-console": ["warn", { "allow": ["debug", "warn", "info", "error"] }],
+    "no-unused-vars": "warn",
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "prettier/prettier": ["error", { "trailingComma": "es5", "semi": false, "singleQuote": true, "printWidth": 160, "arrowParens": "avoid" }]
+  }
+}
