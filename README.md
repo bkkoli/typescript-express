@@ -1,4 +1,4 @@
-# signage-server
+# typescript-express
 
 ## Getting started
 
