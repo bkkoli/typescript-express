@@ -11,15 +11,16 @@ import path from 'path'
 
 import MqttClient from './utils/mqttClient.js'
 import ElasticClient from './utils/db/elasticClient.js'
+import OpensearchClient from './utils/db/opensearchClient.js'
 import { Server } from 'http'
 
 class App {
   #expressApp: any
   #mqttClient
-  #elasticClient
+  #dbClient
 
-  constructor({ port = 3000, mqttBrokerUrl, elasticClient }: { port: number | string; mqttBrokerUrl: string; elasticClient: ElasticClient }) {
-    this.#elasticClient = elasticClient
+  constructor({ port = 3000, mqttBrokerUrl, dbClient }: { port: number | string; mqttBrokerUrl: string; dbClient: ElasticClient | OpensearchClient }) {
+    this.#dbClient = dbClient
     this.createExpressApp({ port })
     this.#mqttClient = new MqttClient({
       url: mqttBrokerUrl,
@@ -34,8 +35,8 @@ class App {
     return this.#expressApp
   }
 
-  get elasticClient() {
-    return this.#elasticClient
+  get dbClient() {
+    return this.#dbClient
   }
 
   get mqttClient() {

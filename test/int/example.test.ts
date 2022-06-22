@@ -2,10 +2,11 @@
 import request from 'supertest'
 import App from '../../src/app.js'
 import ElasticClient from '../../src/utils/db/elasticClient.js'
+import OpensearchClient from '../../src/utils/db/opensearchClient.js'
 
 import type { Example } from '../../src/types/model'
 
-let app: App, elasticClient: ElasticClient, exampleId: string
+let app: App, dbClient: ElasticClient | OpensearchClient, exampleId: string
 
 const example: Example = {
   _id: '',
@@ -19,13 +20,13 @@ const exampleUpdated: Example = {
 
 describe('Example Router Intergration Test', () => {
   beforeAll(async () => {
-    elasticClient = new ElasticClient('http://localhost:9200')
-    app = new App({ port: 8000, mqttBrokerUrl: `mqtt://${process.env.mqtt_url}`, elasticClient })
+    dbClient = new OpensearchClient('http://localhost:9200')
+    app = new App({ port: 8000, mqttBrokerUrl: `mqtt://${process.env.mqtt_url}`, dbClient })
     global.app = app
   })
 
   afterAll(async () => {
-    await elasticClient.close()
+    await dbClient.close()
     if (app.mqttClient && app.mqttClient.connected)
       await app.mqttClient.unsubscribe('/test', async (err: Error) => {
         if (!err) await app.mqttClient.end()
