@@ -40,7 +40,7 @@ const runAppWithEnvFile = async () => {
     {
       type: 'input',
       name: 'envFileName',
-      message: 'env file명을 입력해주세요',
+      message: 'Type your env file name',
     },
   ])
 
@@ -55,7 +55,7 @@ const runAppWithUserInput = async () => {
       {
         type: 'confirm',
         name: 'isUseEnvFile',
-        message: '.env 파일 사용여부를 정해주세요',
+        message: 'Do you use .env file?',
       },
     ])
 
@@ -68,24 +68,24 @@ const runAppWithUserInput = async () => {
       {
         type: 'list',
         name: 'NODE_ENV',
-        message: '서버 실행환경을 선택해주세요',
+        message: 'Select NODE_ENV',
         choices: ['development', 'production'],
       },
       {
         type: 'input',
         name: 'PORT',
-        message: '서버 PORT를 입력해주세요',
+        message: 'Type Server port to listen',
       },
       {
         type: 'list',
         name: 'DB_TYPE',
-        message: 'DB Type를 입력해주세요',
+        message: 'Select Your DB type',
         choices: ['elastic', 'opensearch'],
       },
       {
         type: 'input',
         name: 'ES_NODE',
-        message: '엘라스틱 서치 노드를 입력해주세요(예: http://localhost:9200)',
+        message: 'Type your elasticsearch or opensearch node(ex: http://localhost:9200)',
       },
     ])
 
