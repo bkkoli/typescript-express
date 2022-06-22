@@ -8,6 +8,8 @@
     "test": "test"
   },
   "scripts": {
+    "setting:start": "./required-services/init.sh",
+    "setting:stop": "cd required-services && docker-compose down",
     "start": "tsc && node dist/src/server.js",
     "test": "npm run compile && npm run jest",
     "test:coverage": "npm run compile && node --experimental-vm-modules node_modules/jest/bin/jest.js --forceExit --maxWorkers=1 --coverage",
