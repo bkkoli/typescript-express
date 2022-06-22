@@ -1,3 +1,14 @@
 /dist
 /.history
 /node_modules
+
+# oss data, logs
+/required-services/oss/**/data/*
+/required-services/oss/**/logs/*
+
+# oss snapshot
+/required-services/oss-snapshot/oss*/*
+
+# except
+!/required-services/oss/**/.gitkeep
+!/required-services/oss-snapshot/oss*/.gitkeep

@@ -1,0 +1,96 @@
+version: '3.8'
+services:
+  mqtt:
+    image: ${MQTT_IMAGE}
+    container_name: mqtt
+    ports:
+      - '0.0.0.0:${MQTT_EXTERNAL_PORT}:1883'
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+  oss01:
+    image: ${OSS_IMAGE}
+    container_name: oss01
+    environment:
+      - node.name=oss01
+      - cluster.name=api-cluster
+      - discovery.seed_hosts=oss02,oss03
+      - cluster.initial_master_nodes=oss01
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/opensearch/backup
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./oss/oss01/data:/usr/share/opensearch/data
+      - ./oss/oss01/logs:/usr/share/opensearch/logs
+      - ./oss-snapshot/oss01:/usr/share/opensearch/backup
+    ports:
+      - '0.0.0.0:${OSS_EXTERNAL_PORT}:9200'
+    networks:
+      - oss_net
+  oss02:
+    image: ${OSS_IMAGE}
+    container_name: oss02
+    environment:
+      - node.name=oss02
+      - cluster.name=api-cluster
+      - discovery.seed_hosts=oss01,oss03
+      - cluster.initial_master_nodes=oss01
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/opensearch/backup
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./oss/oss02/data:/usr/share/opensearch/data
+      - ./oss/oss02/logs:/usr/share/opensearch/logs
+      - ./oss-snapshot/oss02:/usr/share/opensearch/backup
+    networks:
+      - oss_net
+  oss03:
+    image: ${OSS_IMAGE}
+    container_name: oss03
+    environment:
+      - node.name=oss03
+      - cluster.name=api-cluster
+      - discovery.seed_hosts=oss01,oss02
+      - cluster.initial_master_nodes=oss01
+      - bootstrap.memory_lock=true
+      - path.repo=/usr/share/opensearch/backup
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./oss/oss03/data:/usr/share/opensearch/data
+      - ./oss/oss03/logs:/usr/share/opensearch/logs
+      - ./oss-snapshot/oss03:/usr/share/opensearch/backup
+    networks:
+      - oss_net
+  oss-dashboard:
+    image: ${OSS_DASHBOARD_IMAGE}
+    container_name: oss-dashboard
+    environment:
+      - OPENSEARCH_HOSTS=["http://oss01:9200"]
+      - opensearch.requestTimeout=240000
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    ports:
+      - 0.0.0.0:${OSS_DASHBOARD_EXTERNAL_PORT}:5601
+    links:
+      - oss01
+    networks:
+      - oss_net
+    depends_on:
+      - oss01
+
+networks:
+  oss_net:
+    driver: bridge
